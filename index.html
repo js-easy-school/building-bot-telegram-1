@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Bot Builder - Визуальный конструктор</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🤖 Telegram Bot Builder</h1>
+            <div class="header-actions">
+                <button id="clearBtn" class="btn btn-secondary">Очистить</button>
+                <button id="saveBtn" class="btn btn-primary">Сохранить проект</button>
+                <button id="loadBtn" class="btn btn-primary">Загрузить</button>
+                <button id="generateBtn" class="btn btn-success">Генерировать код</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Left Panel - Blocks Palette -->
+            <aside class="blocks-palette">
+                <h2>Блоки</h2>
+
+                <div class="block-category">
+                    <h3>🎯 Основные</h3>
+                    <div class="block-item" draggable="true" data-type="start">
+                        <span class="block-icon">▶️</span>
+                        <span>Старт бота</span>
+                    </div>
+                    <div class="block-item" draggable="true" data-type="command">
+                        <span class="block-icon">⚡</span>
+                        <span>Команда</span>
+                    </div>
+                    <div class="block-item" draggable="true" data-type="message">
+                        <span class="block-icon">💬</span>
+                        <span>Сообщение</span>
+                    </div>
+                </div>
+
+                <div class="block-category">
+                    <h3>📝 Ответы</h3>
+                    <div class="block-item" draggable="true" data-type="send_text">
+                        <span class="block-icon">📤</span>
+                        <span>Отправить текст</span>
+                    </div>
+                    <div class="block-item" draggable="true" data-type="send_photo">
+                        <span class="block-icon">🖼️</span>
+                        <span>Отправить фото</span>
+                    </div>
+                    <div class="block-item" draggable="true" data-type="send_buttons">
+                        <span class="block-icon">🔘</span>
+                        <span>Кнопки</span>
+                    </div>
+                </div>
+
+                <div class="block-category">
+                    <h3>🔀 Логика</h3>
+                    <div class="block-item" draggable="true" data-type="condition">
+                        <span class="block-icon">❓</span>
+                        <span>Условие</span>
+                    </div>
+                    <div class="block-item" draggable="true" data-type="variable">
+                        <span class="block-icon">📦</span>
+                        <span>Переменная</span>
+                    </div>
+                    <div class="block-item" draggable="true" data-type="delay">
+                        <span class="block-icon">⏱️</span>
+                        <span>Задержка</span>
+                    </div>
+                </div>
+
+                <div class="block-category">
+                    <h3>💾 Данные</h3>
+                    <div class="block-item" draggable="true" data-type="save_data">
+                        <span class="block-icon">💾</span>
+                        <span>Сохранить данные</span>
+                    </div>
+                    <div class="block-item" draggable="true" data-type="load_data">
+                        <span class="block-icon">📂</span>
+                        <span>Загрузить данные</span>
+                    </div>
+                </div>
+
+                <div class="block-category">
+                    <h3>🌐 API</h3>
+                    <div class="block-item" draggable="true" data-type="api_request">
+                        <span class="block-icon">🔌</span>
+                        <span>API запрос</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center - Canvas -->
+            <main class="canvas-container">
+                <div class="canvas" id="canvas">
+                    <div class="canvas-placeholder">
+                        <p>Перетащите блоки сюда для создания бота</p>
+                        <p class="hint">💡 Начните с блока "Старт бота" или "Команда"</p>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Right Panel - Properties & Code -->
+            <aside class="properties-panel">
+                <div class="panel-tabs">
+                    <button class="tab-btn active" data-tab="properties">Свойства</button>
+                    <button class="tab-btn" data-tab="code">Код</button>
+                </div>
+
+                <div class="tab-content active" id="properties-tab">
+                    <div id="block-properties">
+                        <p class="no-selection">Выберите блок для редактирования свойств</p>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="code-tab">
+                    <div class="code-settings">
+                        <h3>Настройки генерации</h3>
+                        <label>
+                            <input type="radio" name="codeType" value="python" checked>
+                            Python (python-telegram-bot)
+                        </label>
+                        <label>
+                            <input type="radio" name="codeType" value="nodejs">
+                            Node.js (node-telegram-bot-api)
+                        </label>
+                        <label>
+                            <input type="checkbox" id="includeComments" checked>
+                            Включить комментарии
+                        </label>
+                    </div>
+
+                    <div class="code-output">
+                        <div class="code-header">
+                            <span>Сгенерированный код:</span>
+                            <button id="copyCodeBtn" class="btn btn-small">Копировать</button>
+                        </div>
+                        <pre><code id="generatedCode">// Код появится после генерации</code></pre>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Modal for Code Export -->
+    <div id="codeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Сгенерированный код бота</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="code-type-selector">
+                    <button class="code-type-btn active" data-lang="python">Python</button>
+                    <button class="code-type-btn" data-lang="nodejs">Node.js</button>
+                </div>
+                <div class="code-display">
+                    <pre><code id="modalCode"></code></pre>
+                </div>
+                <div class="modal-footer">
+                    <button id="downloadCodeBtn" class="btn btn-primary">Скачать файл</button>
+                    <button id="copyModalCodeBtn" class="btn btn-secondary">Копировать</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="blocks-config.js"></script>
+    <script src="code-generator.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
